@@ -16,7 +16,7 @@ class NaiveBayes:
         Initializes the Naive Bayes classifier
         """
         self.class_priors: Dict[int, torch.Tensor] = None
-        self.conditional_probabilities: Dict[int, torch.Tensor] = None
+        self.conditional_probabilities: Dict[int, torch.Tensor] = 
         self.vocab_size: int = None
 
     def fit(self, features: torch.Tensor, labels: torch.Tensor, delta: float = 1.0):
@@ -29,9 +29,9 @@ class NaiveBayes:
             delta (float): Smoothing parameter for Laplace smoothing.
         """
         # TODO: Estimate class priors and conditional probabilities of the bag of words 
-        self.class_priors = None
-        self.vocab_size = None # Shape of the probability tensors, useful for predictions and conditional probabilities
-        self.conditional_probabilities = None
+        self.class_priors = self.estimate_class_priors(labels)
+        self.vocab_size = features.shape # Shape of the probability tensors, useful for predictions and conditional probabilities
+        self.conditional_probabilities = self.estimate_conditional_probabilities(features, labels, delta)
         return
 
     def estimate_class_priors(self, labels: torch.Tensor) -> Dict[int, torch.Tensor]:
@@ -79,8 +79,14 @@ class NaiveBayes:
         for i in range(len(labels)):
             label = int(labels[i])
             bow = list(features[i])
-            
+            probs = []
+            for j in bow:
+                cond = (j+delta)/(len(features)+delta*self.vocab_size)
+                probs.append(cond)
 
+            class_word_counts[label] = torch.tensor(probs)
+
+        self.conditional_probabilities = class_word_counts
         return class_word_counts
 
     def estimate_class_posteriors(
