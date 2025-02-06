@@ -109,6 +109,10 @@ class NaiveBayes:
             )
         # TODO: Calculate posterior based on priors and conditional probabilities of the words
         log_posteriors: torch.Tensor = None
+        features = [feature, feature]
+        labels = [0,1]
+        class_conditional = self.estimate_conditional_probabilities(features, labels, 1.0)
+        
         return log_posteriors
 
     def predict(self, feature: torch.Tensor) -> int:
