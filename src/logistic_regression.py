@@ -85,7 +85,7 @@ class LogisticRegression:
         """
         torch.manual_seed(random_state)
         
-        params: torch.Tensor = None
+        params: torch.Tensor = torch.zeros(dim)
         
         return params
 
@@ -103,7 +103,7 @@ class LogisticRegression:
         Returns:
             torch.Tensor: The sigmoid of z.
         """
-        result: torch.Tensor = None
+        result: torch.Tensor = torch.tensor(1/(1+torch.exp(-z)))
         return result
 
     @staticmethod
