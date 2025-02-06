@@ -81,7 +81,7 @@ class NaiveBayes:
             bow = list(features[i])
             probs = []
             for j in bow:
-                cond = (j+delta)/(len(features)+delta*self.vocab_size)
+                cond = (j+delta)/(len(features)+(delta*self.vocab_size))
                 probs.append(cond)
 
             class_word_counts[label] = torch.tensor(probs)
