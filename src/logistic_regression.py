@@ -123,8 +123,16 @@ class LogisticRegression:
         Returns:
             torch.Tensor: The computed binary cross-entropy loss.
         """
-        ce_loss: torch.Tensor = None
+        ce_loss: torch.Tensor = 0
+        N = int(predictions.shape[0])
+        for i in range(int(predictions.shape[0])):
+            loss = targets[i]*torch.log(predictions[i])+(1-targets[i])*(torch.log(1-predictions[i]))
+            ce_loss+=loss
+
+        ce_loss=torch.tensor(-1/N*ce_loss)
+
         return ce_loss
+    
 
     @property
     def weights(self):
