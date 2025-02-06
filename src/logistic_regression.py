@@ -36,7 +36,18 @@ class LogisticRegression:
         self.weights = self.initialize_parameters(features.shape)
         predictions = self.predict(features)
         ce_loss = self.binary_cross_entropy_loss(predictions, labels)
-        
+        for e in epochs:
+            grad_weights = 0
+            grad_bias = 0
+            for i in range(int(features.shape)):
+                grad_weights += (predictions[i]-labels[i])*features[i]
+                grad_bias += (predictions[i]-labels[i])
+            
+            self.weights[:-1] -= learning_rate*grad_weights
+            self.weights[-1] -= learning_rate*grad_bias
+
+            print(ce_loss)
+            
         return
 
     def predict(self, features: torch.Tensor, cutoff: float = 0.5) -> torch.Tensor:
@@ -51,12 +62,10 @@ class LogisticRegression:
             torch.Tensor: Predicted class labels (0 or 1).
         """
         decisions: torch.Tensor = []
+        probabilities = self.predict_proba(features)
 
-        for f in list(features):
-            b = self.weights[-1]
-            z = self.weights[:-1].dot(f)+b
-            result = self.sigmoid(z)
-            if result >= 0.5:
+        for p in list(probabilities):
+            if  p >= 0.5:
                 decisions.append(1)
             else:
                 decisions.append(0)
@@ -81,7 +90,15 @@ class LogisticRegression:
         if self.weights is None:
             raise ValueError("Model not trained. Call the 'train' method first.")
         
-        probabilities: torch.Tensor = None
+        probabilities: torch.Tensor = []
+
+        for f in list(features):
+            b = self.weights[-1]
+            z = self.weights[:-1].dot(f)+b
+            result = self.sigmoid(z)
+            probabilities.append(result)
+
+        probabilities = torch.tensor(probabilities)
         
         return probabilities
 
