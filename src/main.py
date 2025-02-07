@@ -7,7 +7,7 @@ import torch
 
 def main():
     # Load training data
-    train_examples = read_sentiment_examples("data/sample_train.txt")
+    train_examples = read_sentiment_examples("data/train.txt")
     print("Building vocabulary...")
     vocab = build_vocab(train_examples)
 
@@ -49,3 +49,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

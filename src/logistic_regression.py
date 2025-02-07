@@ -47,7 +47,7 @@ class LogisticRegression:
             gradient = torch.cat((grad_weights,grad_bias))
             self.weights -= learning_rate*gradient
 
-            #print(ce_loss)
+            print(ce_loss)
             
         return
 

@@ -30,9 +30,8 @@ class NaiveBayes:
         """
         # TODO: Estimate class priors and conditional probabilities of the bag of words 
         self.class_priors = self.estimate_class_priors(labels)
-        #probabilities = self.predict(features)
-        #self.vocab_size = probabilities.shape # Shape of the probability tensors, useful for predictions and conditional probabilities
         self.conditional_probabilities = self.estimate_conditional_probabilities(features, labels, delta)
+        self.vocab_size = features.size(1) # Shape of the probability tensors, useful for predictions and conditional probabilities
         return
 
     def estimate_class_priors(self, labels: torch.Tensor) -> Dict[int, torch.Tensor]:

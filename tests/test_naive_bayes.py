@@ -33,8 +33,6 @@ def test_estimate_conditional_probabilities():
     assert all(isinstance(cond_probs[label], torch.Tensor) for label in cond_probs)
     assert torch.allclose(cond_probs[0], torch.tensor([2 / 5, 2 / 5, 1 / 5], dtype=torch.float32))
     assert torch.allclose(cond_probs[1], torch.tensor([1 / 5, 2 / 5, 2 / 5], dtype=torch.float32))
-    
-
 
 
 @pytest.mark.order(6)
