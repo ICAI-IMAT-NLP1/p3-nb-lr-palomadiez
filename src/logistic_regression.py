@@ -35,7 +35,7 @@ class LogisticRegression:
         # TODO: Implement gradient-descent algorithm to optimize logistic regression weights
         self.weights = self.initialize_parameters(features.shape[1], self.random_state)
         for e in range(epochs):
-            predictions = self.predict(features)
+            predictions = self.predict_proba(features)
             ce_loss = self.binary_cross_entropy_loss(predictions, labels)
             grad_weights = torch.zeros(features.shape[1],)
             grad_bias = torch.zeros(1,)
@@ -120,7 +120,7 @@ class LogisticRegression:
         torch.manual_seed(random_state)
         
         params: torch.Tensor = None
-        params = torch.randn((dim + 1,))*0.01
+        params = torch.randn((dim + 1,))#*0.01
         return params
 
     @staticmethod
@@ -157,13 +157,11 @@ class LogisticRegression:
         Returns:
             torch.Tensor: The computed binary cross-entropy loss.
         """
-        ce_loss: torch.Tensor = torch.tensor((1,))
-        N = int(predictions.shape[0])
-        for i in range(N):
-            loss = targets[i]*torch.log(predictions[i])+(1-targets[i])*(torch.log(1-predictions[i]))
-            ce_loss+=loss
-
-        ce_loss=torch.tensor(-1/N*ce_loss)
+        ce_loss: torch.Tensor = None
+        N = len(predictions)
+        tensor_suma = targets*torch.log(predictions)+(1-targets)*torch.log(1-predictions)
+    
+        ce_loss = torch.tensor(-(1/N)*torch.sum(tensor_suma))
         return ce_loss
     
 
