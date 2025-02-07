@@ -95,7 +95,7 @@ class LogisticRegression:
 
         for f in list(features):
             b = self.weights[-1]
-            z = self.weights[:-1].dot(f)+b
+            z = self.weights[:-1].dot(f.float())+b
             result = self.sigmoid(z)
             probabilities.append(result)
 
@@ -120,7 +120,7 @@ class LogisticRegression:
         torch.manual_seed(random_state)
         
         params: torch.Tensor = None
-        params = torch.randn((dim + 1,))#*0.01
+        params = torch.randn((dim + 1,))*0.01
         return params
 
     @staticmethod
