@@ -108,11 +108,15 @@ class NaiveBayes:
                 "Model must be trained before estimating class posteriors."
             )
         # TODO: Calculate posterior based on priors and conditional probabilities of the words
-        log_posteriors: torch.Tensor = None
-        features = [feature, feature]
-        labels = [0,1]
-        class_conditional = self.estimate_conditional_probabilities(features, labels, 1.0)
+        log_posteriors = {}
         
+        for class_label, class_prior in self.class_priors.items():
+            log_likelihood = torch.sum(torch.log(self.conditional_probabilities[class_label]) * feature)
+            
+            log_posteriors[class_label] = torch.log(class_prior) + log_likelihood
+        
+        log_posteriors = torch.tensor([log_posteriors[label] for label in sorted(log_posteriors.keys())])
+
         return log_posteriors
 
     def predict(self, feature: torch.Tensor) -> int:
@@ -133,6 +137,8 @@ class NaiveBayes:
         
         # TODO: Calculate log posteriors and obtain the class of maximum likelihood 
         pred: int = None
+        log_posteriors = self.estimate_class_posteriors(feature)
+        pred = torch.argmax(log_posteriors).item()
         return pred
 
     def predict_proba(self, feature: torch.Tensor) -> torch.Tensor:
@@ -153,4 +159,10 @@ class NaiveBayes:
 
         # TODO: Calculate log posteriors and transform them to probabilities (softmax)
         probs: torch.Tensor = None
+
+        log_posteriors = self.estimate_class_posteriors(feature)
+        max_log_posterior = torch.max(log_posteriors)
+        norm_posteriors = torch.exp(log_posteriors - max_log_posterior)
+        probs = norm_posteriors / torch.sum(norm_posteriors)
+
         return probs

@@ -33,20 +33,21 @@ class LogisticRegression:
             None: The function updates the model weights in place.
         """
         # TODO: Implement gradient-descent algorithm to optimize logistic regression weights
-        self.weights = self.initialize_parameters(features.shape)
-        predictions = self.predict(features)
-        ce_loss = self.binary_cross_entropy_loss(predictions, labels)
-        for e in epochs:
-            grad_weights = 0
-            grad_bias = 0
-            for i in range(int(features.shape)):
-                grad_weights += (predictions[i]-labels[i])*features[i]
-                grad_bias += (predictions[i]-labels[i])
-            
-            self.weights[:-1] -= learning_rate*grad_weights
-            self.weights[-1] -= learning_rate*grad_bias
+        self.weights = self.initialize_parameters(features.shape[1], self.random_state)
+        for e in range(epochs):
+            predictions = self.predict(features)
+            ce_loss = self.binary_cross_entropy_loss(predictions, labels)
+            grad_weights = torch.zeros(features.shape[1],)
+            grad_bias = torch.zeros(1,)
 
-            print(ce_loss)
+            for i in range(len(features)):
+                grad_weights += ((predictions[i]-labels[i])*features[i])/features.shape[0]
+                grad_bias += (predictions[i]-labels[i])/features.shape[0]
+            
+            gradient = torch.cat((grad_weights,grad_bias))
+            self.weights -= learning_rate*gradient
+
+            #print(ce_loss)
             
         return
 
@@ -118,8 +119,8 @@ class LogisticRegression:
         """
         torch.manual_seed(random_state)
         
-        params: torch.Tensor = torch.zeros(dim)
-        
+        params: torch.Tensor = None
+        params = torch.randn((dim + 1,))*0.01
         return params
 
     @staticmethod
@@ -156,9 +157,9 @@ class LogisticRegression:
         Returns:
             torch.Tensor: The computed binary cross-entropy loss.
         """
-        ce_loss: torch.Tensor = 0
+        ce_loss: torch.Tensor = torch.tensor((1,))
         N = int(predictions.shape[0])
-        for i in range(int(predictions.shape[0])):
+        for i in range(N):
             loss = targets[i]*torch.log(predictions[i])+(1-targets[i])*(torch.log(1-predictions[i]))
             ce_loss+=loss
 
