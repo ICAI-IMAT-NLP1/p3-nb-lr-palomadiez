@@ -75,18 +75,16 @@ class NaiveBayes:
         """
         # TODO: Estimate conditional probabilities for the words in features and apply smoothing
         class_word_counts: Dict[int, torch.Tensor] = {}
+        total_features = features.shape[0]
+        only_labels = labels.unique()
 
-        for i in range(len(list(labels))):
-            label = int(labels[i])
-            bow = list(features[i])
-            probs = []
-            for j in bow:
-                cond = (j+delta)/(len(features)+(delta*len(features[i])))
-                probs.append(cond)
-
-            class_word_counts[label] = torch.tensor(probs)
-
+        for label in only_labels:
+            mask = labels == label
+            class_features = features[mask]
+            cond_probs = (class_features + delta) / (class_features.sum() + delta * features.shape[1])
+            class_word_counts[int(label)] = cond_probs
         self.conditional_probabilities = class_word_counts
+
         return class_word_counts
 
     def estimate_class_posteriors(

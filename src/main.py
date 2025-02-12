@@ -32,7 +32,7 @@ def main():
 
     # Load test data
     test_examples = read_sentiment_examples("data/test.txt")
-    print("Preparing test BoW...")
+    print("Preparing test BoW...") 
     test_features = torch.stack([bag_of_words(ex.words, vocab) for ex in test_examples])
     test_labels = torch.tensor([ex.label for ex in test_examples], dtype=torch.float32)
 
@@ -49,4 +49,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
