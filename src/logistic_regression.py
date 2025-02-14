@@ -120,7 +120,7 @@ class LogisticRegression:
         torch.manual_seed(random_state)
         
         params: torch.Tensor = None
-        params = torch.randn((dim + 1,))*0.01
+        params = torch.randn((dim + 1,))#*0.01
         return params
 
     @staticmethod
